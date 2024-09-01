@@ -3,8 +3,3 @@
 @tailwind utilities;
 
 /* globals.css */
-body {
-  background-color: #664b78; /* Fundo roxo */
-  color: #333;
-  font-family: 'Inter', sans-serif;
-}

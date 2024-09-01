@@ -1,6 +1,7 @@
 "use client";
 
-import axios from "axios";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -12,19 +13,22 @@ export default function LoginForm() {
 			password: "",
 		},
 	});
+	const router = useRouter();
 	const onSubmit = async (data: any) => {
-		try {
-			setLoading(true);
-			const res = await axios.post("http://localhost:3001/auth", data);
-			console.log("res", res.data);
-			setLoading(false);
-		} catch (error: any) {
-			if ((error as any).response && (error as any).response.status === 401) {
-				console.error("Unauthorized: Invalid username or password");
-			} else {
-				console.error("An error occurred:", error.message);
-			}
+		setLoading(true);
+
+		const res = await signIn("credentials", {
+			redirect: false,
+			username: data.username,
+			password: data.password,
+		});
+		console.log("res", res);
+		setLoading(false);
+		if (res?.error) {
+			console.log("error", res.error);
+			return;
 		}
+		router.push("/projects");
 	};
 
 	const isButtonDisabled = () => {

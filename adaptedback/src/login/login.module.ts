@@ -3,7 +3,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth/auth.controller';
 import { Login } from './entities/login.entity';
-import { LoginController } from './login.controller';
 import { LoginService } from './login.service';
 
 @Module({
@@ -12,10 +11,10 @@ import { LoginService } from './login.service';
     JwtModule.register({
       global: true,
       secret: 'secret',
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '600000s' },
     }),
   ],
-  controllers: [LoginController, AuthController],
+  controllers: [AuthController],
   providers: [LoginService],
   exports: [LoginService],
 })

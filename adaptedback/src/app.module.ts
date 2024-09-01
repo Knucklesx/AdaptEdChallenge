@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Login } from './login/entities/login.entity';
 import { LoginModule } from './login/login.module';
+import { ProjectsModule } from './projects/projects.module';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -20,9 +22,11 @@ import { LoginModule } from './login/login.module';
       database: 'AdaptEd',
       entities: [Login],
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     LoginModule,
+    ProjectsModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
