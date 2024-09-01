@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
 import { CreateLoginDto } from './dto/create-login.dto';
 import { Login } from './entities/login.entity';
@@ -8,7 +10,9 @@ import { Login } from './entities/login.entity';
 export class LoginService {
   constructor(
     @InjectRepository(Login) private loginRepository: Repository<Login>,
+    private jwtService: JwtService,
   ) {}
+
   // create(createLoginDto: CreateLoginDto)
   create(createLoginDto: CreateLoginDto) {
     console.log(createLoginDto);
@@ -19,24 +23,29 @@ export class LoginService {
     return this.loginRepository.find();
   }
 
-  async login(createLoginDto: CreateLoginDto) {
-    const { username, password } = createLoginDto;
-    const user = await this.loginRepository.findOneBy({ username });
-    if (user && user.password === password) {
-      return user;
-    }
-    return null;
+  findByUsername(username: string) {
+    return this.loginRepository.findOneBy({ username });
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} login`;
-  // }
+  async login(
+    createLoginDto: CreateLoginDto,
+    // ): Promise<{ access_token: string }> {
+  ): Promise<string> {
+    const { username, password } = createLoginDto;
+    const user = await this.findByUsername(username);
+    if (user?.password !== password) {
+      throw new UnauthorizedException();
+    }
+    const payload = { username: user.username, sub: user.id };
+    // const access_token = await this.generateAccessToken(payload);
+    const access_token = await this.jwtService.sign(payload);
+    // return {
+    //   access_token,
+    // };
+    return access_token;
+  }
 
-  // update(id: number, updateLoginDto: UpdateLoginDto) {
-  //   return `This action updates a #${id} login`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} login`;
-  // }
+  async generateAccessToken(payload: any): Promise<string> {
+    return this.jwtService.signAsync(payload);
+  }
 }

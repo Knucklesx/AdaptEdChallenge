@@ -1,3 +1,5 @@
+import LoginForm from "@/components/login/loginForm";
+
 export default function Page() {
 	return (
 		<div className="container mx-auto max-auto px-4 h-full">
@@ -11,6 +13,7 @@ export default function Page() {
 							<hr className="mt-6 border-b-1 boder-blueGray-300" />
 						</div>
 						<div className="flex-auto px-4 lg:px-10 py-10 pt-0">LOGIN</div>
+						<LoginForm />
 					</div>
 				</div>
 			</div>
