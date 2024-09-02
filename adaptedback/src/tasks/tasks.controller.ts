@@ -1,11 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { TasksService } from './tasks.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Request,
+} from '@nestjs/common';
+import { LoginService } from 'src/login/login.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly loginService: LoginService,
+  ) {}
 
   @Post()
   create(@Body() createTaskDto: CreateTaskDto) {
@@ -13,8 +26,15 @@ export class TasksController {
   }
 
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  async findAll(@Request() req) {
+    // const { user } = req;
+    // const myUser = await this.loginService.findByUsername(user.username);
+    // if (!myUser) {
+    //   throw new Error('User not found');
+    // }
+
+    // return this.tasksService.findAll();
+    console.log('req', req);
   }
 
   @Get(':id')

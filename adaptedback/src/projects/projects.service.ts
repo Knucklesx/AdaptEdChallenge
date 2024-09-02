@@ -11,6 +11,7 @@ export class ProjectsService {
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
   ) {}
+
   create(createProjectDto: CreateProjectDto, id: number) {
     const project = this.projectRepository.create({
       ...createProjectDto,
@@ -28,15 +29,47 @@ export class ProjectsService {
     return usersProjects;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  async findOne(id: number) {
+    const myProject = await this.projectRepository.findOne({
+      where: { id },
+      relations: ['tasks'],
+    });
+    if (!myProject) {
+      throw new Error('Project not found');
+    }
+    return myProject;
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} - ${updateProjectDto}`;
+  async update(id: number, updateProjectDto: UpdateProjectDto, userId: number) {
+    const myProject = await this.projectRepository.findOne({
+      where: { id },
+      relations: ['tasks', 'login'],
+    });
+    if (!myProject) {
+      throw new Error('Project not found');
+    }
+    console.log('a', myProject.login.id);
+    console.log('a', userId);
+    if (myProject.login.id !== userId) {
+      throw new Error('You are not authorized to edit this project');
+    }
+    myProject.name = updateProjectDto.name;
+    myProject.description = updateProjectDto.description;
+    this.projectRepository.save(myProject);
+    return myProject;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(id: number, userId: number) {
+    const myProject = await this.projectRepository.findOne({
+      where: { id },
+      relations: ['tasks', 'login'],
+    });
+    if (!myProject) {
+      throw new Error('Project not found');
+    }
+    if (myProject.login.id !== userId) {
+      throw new Error('You are not authorized to edit this project');
+    }
+    this.projectRepository.remove(myProject);
   }
 }
