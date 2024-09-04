@@ -1,25 +1,41 @@
-import ClientLayout from "@/components/clientLayout";
-import type { Metadata } from "next";
+// These styles apply to every route in the application
+
+import "@/styles/globals.css";
 import { Inter } from "next/font/google";
-import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+	variable: "--font-inter",
+	preload: false,
+});
 
-export const metadata: Metadata = {
-	title: "Adapt Edtech",
-	description: "Adapt Edtech",
-};
+import ClientLayout from "@/components/clientLayout";
+// import "@/styles/app.css";
+import "@/styles/globals.css";
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
-}: Readonly<{
+}: {
 	children: React.ReactNode;
-}>) {
+}) {
 	return (
-		<html lang="en">
-			<body className={inter.className}>
-				<ClientLayout>{children}</ClientLayout>
-			</body>
-		</html>
+		<>
+			<html lang="en">
+				<head>
+					<meta
+						name="viewport"
+						content="width=device-width, initial-scale=1, shrink-to-fit=no"
+					/>
+					<title>Adapt Edtech</title>
+				</head>
+				<body className={`${inter.variable} text-blueGray-700 antialiased`}>
+					<main>
+						{/* <section className="relative w-full h-full py-40 min-h-screen"> */}
+						<div className="absolute top-0 w-full h-full bg-purple-300"></div>
+						<ClientLayout>{children}</ClientLayout>
+						{/* </section> */}
+					</main>
+				</body>
+			</html>
+		</>
 	);
 }

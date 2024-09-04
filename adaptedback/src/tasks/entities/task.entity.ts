@@ -1,5 +1,17 @@
 import { Project } from 'src/projects/entities/project.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+export enum TaskStatus {
+  DONE = 'done',
+  PENDING = 'pending',
+  IN_PROGRESS = 'in_progress',
+}
 
 @Entity()
 export class Task {
@@ -11,6 +23,13 @@ export class Task {
   @Column()
   description: string;
 
-  @ManyToOne(() => Project, (project) => project.id)
+  @Column()
+  data_de_vencimento: Date;
+
+  @Column()
+  status: TaskStatus;
+
+  @ManyToOne(() => Project, (project) => project.tasks, { eager: true })
+  @JoinColumn({ name: 'id_project' })
   project: Project;
 }

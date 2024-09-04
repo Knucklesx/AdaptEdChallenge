@@ -12,12 +12,13 @@ export class ProjectsService {
     private readonly projectRepository: Repository<Project>,
   ) {}
 
-  create(createProjectDto: CreateProjectDto, id: number) {
+  async create(createProjectDto: CreateProjectDto, id: number) {
     const project = this.projectRepository.create({
       ...createProjectDto,
       login: { id },
+      tasks: [],
     });
-    this.projectRepository.save(project);
+    await this.projectRepository.save(project);
     return project;
   }
 

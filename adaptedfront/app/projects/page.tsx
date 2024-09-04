@@ -4,9 +4,5 @@ import { getServerSession } from "next-auth";
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
-	return (
-		<div className="bg-black w-full">
-			<Projects />
-		</div>
-	);
+	return <Projects />;
 }
