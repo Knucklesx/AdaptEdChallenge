@@ -9,7 +9,6 @@ export class AuthController {
 
   @Post()
   async getToken(@Request() req): Promise<Resource> {
-    console.log('req', req.body);
     const user = req.body as CreateLoginDto;
     const access_token = await this.loginService.login(user);
 
@@ -17,9 +16,9 @@ export class AuthController {
       access_token: access_token,
       token_type: 'bearer',
       username: user.username,
+      id: user.id,
     });
 
-    console.log('res', res);
     return res;
   }
 }
