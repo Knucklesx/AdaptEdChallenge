@@ -71,6 +71,7 @@ export class ProjectsService {
     if (myProject.login.id !== userId) {
       throw new Error('You are not authorized to edit this project');
     }
-    this.projectRepository.remove(myProject);
+
+    await this.projectRepository.remove(myProject);
   }
 }

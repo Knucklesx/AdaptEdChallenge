@@ -23,7 +23,7 @@ export class TasksService {
     return `This action returns all tasks`;
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
     return `This action returns a #${id} task`;
   }
 
@@ -32,7 +32,8 @@ export class TasksService {
     return `This action updates a #${id} task`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: number) {
+    await this.taskRepository.delete(id);
+    return;
   }
 }

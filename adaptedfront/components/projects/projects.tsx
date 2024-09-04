@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,10 +40,26 @@ export default function Projects() {
 		router.push("/projects/new");
 	};
 
+	const handleDeleteProject = async (id: number) => {
+		try {
+			await axios.delete(`http://localhost:3001/projects/${id}`, {
+				headers: {
+					Authorization: `Bearer ${session?.access_token}`,
+				},
+			});
+			setProjects((prevProjects) => ({
+				...prevProjects,
+				data: prevProjects.data?.filter((project) => project.id !== id),
+			}));
+			router.push("/projects");
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
-		<main className="flex justify-center items-center h-screen bg-slate-300">
-			<div className="bg-white shadow-md rounded p-6 w-4/5 h-4/5">
-				{/* <h1 className="text-2xl font-bold mb-4">Projetos</h1> */}
+		<main className="flex justify-center items-center min-h-screen bg-slate-300">
+			<div className="bg-white shadow-md rounded p-6 w-4/5 my-10">
 				<div className="flex justify-between items-center mb-4">
 					<h1 className="text-2xl font-bold">Projetos</h1>
 					<MyButton
@@ -57,17 +74,31 @@ export default function Projects() {
 					<ul>
 						{projects.data?.map((project) => (
 							<li key={project.id} className="mb-2">
-								<Link href={`/projects/${project.id}/tasks`}>
-									<p className="block p-4 bg-gray-100 rounded hover:bg-gray-200">
-										<h2 className="text-xl font-semibold">{project.name}</h2>
-										<p>{project.description}</p>
-									</p>
-								</Link>
-								<MyButton
-									text="Editar"
-									onClick={() => router.push(`/projects/${project.id}/edit`)}
-									className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-								/>
+								<div className="flex justify-between items-center p-4 bg-gray-100 rounded hover:bg-gray-200">
+									<Link
+										href={`/projects/${project.id}/tasks`}
+										className="flex-1"
+									>
+										<div>
+											<h2 className="text-xl font-semibold">{project.name}</h2>
+											<p>{project.description}</p>
+										</div>
+									</Link>
+									<div className="flex space-x-2">
+										<MyButton
+											text="Editar"
+											onClick={() =>
+												router.push(`/projects/${project.id}/edit`)
+											}
+											className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+										/>
+										<MyButton
+											text="Deletar"
+											onClick={() => handleDeleteProject(project.id)}
+											className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+										/>
+									</div>
+								</div>
 							</li>
 						))}
 					</ul>

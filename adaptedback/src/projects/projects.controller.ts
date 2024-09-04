@@ -106,6 +106,12 @@ export class ProjectsController {
     if (!myUser) {
       throw new Error('User not found');
     }
+    const myProjectTasks = await this.projectsService.findOne(+id);
+    if (myProjectTasks.tasks && myProjectTasks.tasks.length > 0) {
+      myProjectTasks.tasks.map(async (myProject) => {
+        await this.tasksService.remove(myProject.id);
+      });
+    }
     return this.projectsService.remove(+id, myUser.id);
   }
 

@@ -19,7 +19,6 @@ export default function TaskPage({ id }: { id: number }) {
 						session,
 						`projects/${id}/tasks`
 					);
-					console.log("tasks", typeof tasks);
 					setProjects(tasks);
 				} catch (err) {
 					console.error(err);
@@ -35,10 +34,16 @@ export default function TaskPage({ id }: { id: number }) {
 		return <div>Loading...</div>;
 	}
 
+	const myProj = Object.values(projects.data);
+	console.log("ppp", myProj);
+	const myProjName = typeof myProj[1] === "string" ? myProj[1] : "";
+
 	return (
-		<main className="flex justify-center items-center h-screen bg-slate-300">
+		<main className="flex justify-center items-center min-h-screen bg-slate-300">
 			<div className="bg-white shadow-md rounded p-6 w-4/5 h-4/5">
-				<h1 className="text-2xl font-bold mb-4">Projects</h1>
+				<h1 className="text-2xl font-bold mb-4">
+					Tarefas do Projeto {myProjName}
+				</h1>
 				{projects.data?.length === 0 ? (
 					<h1>No Tasks</h1>
 				) : (
@@ -46,8 +51,11 @@ export default function TaskPage({ id }: { id: number }) {
 						{Object.values(projects).map((p) => (
 							<li key={p.id} className="mb-2">
 								<div className="p-4 bg-gray-100 rounded">
-									<h2 className="text-xl font-semibold">{p.name}</h2>
-									<p>{p.description}</p>
+									{/* <h2 className="text-xl font-semibold">{p.name}</h2> */}
+									<div className="flex">
+										<p className="font-bold text-xl">Descrição:</p>
+										<p className="text-lg"> {p.description}</p>
+									</div>
 									<div>
 										{p.tasks.map((t: any) => (
 											<div key={t.id} className="p-4 bg-gray-200 rounded">
